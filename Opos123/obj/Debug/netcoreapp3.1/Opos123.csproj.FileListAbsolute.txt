@@ -1,0 +1,13 @@
+C:\Users\Marko\source\repos\OposZadaci2020\Opos123\bin\Debug\netcoreapp3.1\Opos123.exe
+C:\Users\Marko\source\repos\OposZadaci2020\Opos123\bin\Debug\netcoreapp3.1\Opos123.deps.json
+C:\Users\Marko\source\repos\OposZadaci2020\Opos123\bin\Debug\netcoreapp3.1\Opos123.runtimeconfig.json
+C:\Users\Marko\source\repos\OposZadaci2020\Opos123\bin\Debug\netcoreapp3.1\Opos123.runtimeconfig.dev.json
+C:\Users\Marko\source\repos\OposZadaci2020\Opos123\bin\Debug\netcoreapp3.1\Opos123.dll
+C:\Users\Marko\source\repos\OposZadaci2020\Opos123\bin\Debug\netcoreapp3.1\Opos123.pdb
+C:\Users\Marko\source\repos\OposZadaci2020\Opos123\obj\Debug\netcoreapp3.1\Opos123.csprojAssemblyReference.cache
+C:\Users\Marko\source\repos\OposZadaci2020\Opos123\obj\Debug\netcoreapp3.1\Opos123.AssemblyInfoInputs.cache
+C:\Users\Marko\source\repos\OposZadaci2020\Opos123\obj\Debug\netcoreapp3.1\Opos123.AssemblyInfo.cs
+C:\Users\Marko\source\repos\OposZadaci2020\Opos123\obj\Debug\netcoreapp3.1\Opos123.csproj.CoreCompileInputs.cache
+C:\Users\Marko\source\repos\OposZadaci2020\Opos123\obj\Debug\netcoreapp3.1\Opos123.dll
+C:\Users\Marko\source\repos\OposZadaci2020\Opos123\obj\Debug\netcoreapp3.1\Opos123.pdb
+C:\Users\Marko\source\repos\OposZadaci2020\Opos123\obj\Debug\netcoreapp3.1\Opos123.genruntimeconfig.cache

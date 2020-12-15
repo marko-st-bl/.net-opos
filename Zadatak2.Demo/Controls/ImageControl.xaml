@@ -1,0 +1,38 @@
+﻿<UserControl
+    x:Class="Zadatak2.Demo.Controls.ImageControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Zadatak2.Demo.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="80"
+    d:DesignWidth="400">
+
+    <Grid>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock x:Name="ImageTitle" Text="Image title" Margin="5"/>
+        <ProgressBar x:Name="ProcessProgressBar" Value="0.0" Maximum="1.0" Grid.Row="1" Margin="10,5,10,5"/>
+        <Button x:Name="CancelButton" Grid.Row="0" Grid.RowSpan="3" Grid.Column="1" Width="40" Height="40" Margin="5" Click="CancelButton_Click">
+            <SymbolIcon Symbol="Cancel"/>
+        </Button>
+        <Button x:Name="PauseButton" Grid.Row="0" Grid.RowSpan="3" Grid.Column="2" Width="40" Height="40" Margin="5" Click="PauseButton_Click">
+            <SymbolIcon Symbol="Pause"/>
+        </Button>
+        <Button x:Name="StartButton" Grid.Row="0" Grid.RowSpan="3" Grid.Column="2" Width="40" Height="40" Visibility="Collapsed" Margin="5" Click="StartButton_Click">
+            <SymbolIcon Symbol="Play"/>
+        </Button>
+        <TextBlock x:Name="ConvertInfoTextBlock" Grid.Row="2" Text="Pending" Style="{ThemeResource CaptionTextBlockStyle}" Margin="5"/>
+    </Grid>
+</UserControl>

@@ -1,0 +1,2 @@
+C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Demo\Zadatak2.Demo.csproj;x86
+C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2\Zadatak2.csproj;neutral
