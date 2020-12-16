@@ -48,7 +48,7 @@
             <StackPanel Grid.Row="0"
                         Orientation="Horizontal"
                         HorizontalAlignment="Center">
-                <Button Content="Convert All" Width="150"/>
+                <Button x:Name="ConvertAllButton" Content="Convert All" Width="150" Click="ConvertAllButton_Click"/>
             </StackPanel>
         </Grid>
     </Grid>

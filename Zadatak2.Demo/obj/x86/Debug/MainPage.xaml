@@ -24,7 +24,7 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Top"
                     Padding="20">
-            <Button x:ConnectionId='3' x:Name="AddPhotosButton" Content="Add Photos" 
+            <Button x:ConnectionId='4' x:Name="AddPhotosButton" Content="Add Photos" 
                     Width="150"
                     Margin="10"                          />
             <Button Content="Take Photo"
@@ -33,7 +33,7 @@
         </StackPanel>
 
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" VerticalScrollMode="Enabled">
-            <StackPanel x:ConnectionId='2' x:Name="ImagesStackPanel" Padding="10">
+            <StackPanel x:ConnectionId='3' x:Name="ImagesStackPanel" Padding="10">
                 
             </StackPanel>
         </ScrollViewer>
@@ -48,7 +48,7 @@
             <StackPanel Grid.Row="0"
                         Orientation="Horizontal"
                         HorizontalAlignment="Center">
-                <Button Content="Convert All" Width="150"/>
+                <Button x:ConnectionId='2' x:Name="ConvertAllButton" Content="Convert All" Width="150"                               />
             </StackPanel>
         </Grid>
     </Grid>

@@ -23,17 +23,17 @@
         </Grid.RowDefinitions>
 
         <TextBlock x:ConnectionId='2' x:Name="ImageTitle" Text="Image title" Margin="5"/>
-        <ProgressBar x:ConnectionId='3' x:Name="ProcessProgressBar" Value="0.0" Maximum="1.0" Grid.Row="1" Margin="10,5,10,5"/>
-        <Button x:ConnectionId='4' x:Name="CancelButton" Grid.Row="0" Grid.RowSpan="3" Grid.Column="1" Width="40" Height="40" Margin="5"                           >
+        <ProgressBar x:ConnectionId='3' x:Name="ProcessingProgressBar" Value="0.0" Maximum="1.0" Grid.Row="1" Margin="10,5,10,5" Visibility="Collapsed"/>
+        <Button x:ConnectionId='4' x:Name="CancelButton" Grid.Row="0" Grid.RowSpan="3" Grid.Column="1" Width="40" Height="40" Margin="5" Visibility="Collapsed"                           >
             <SymbolIcon Symbol="Cancel"/>
         </Button>
-        <Button x:ConnectionId='5' x:Name="PauseButton" Grid.Row="0" Grid.RowSpan="3" Grid.Column="2" Width="40" Height="40" Margin="5"                          >
+        <Button x:ConnectionId='5' x:Name="PauseButton" Grid.Row="0" Grid.RowSpan="3" Grid.Column="2" Width="40" Height="40" Margin="5" Visibility="Collapsed"                          >
             <SymbolIcon Symbol="Pause"/>
         </Button>
-        <Button x:ConnectionId='6' x:Name="StartButton" Grid.Row="0" Grid.RowSpan="3" Grid.Column="2" Width="40" Height="40" Visibility="Collapsed" Margin="5"                          >
+        <Button x:ConnectionId='6' x:Name="StartButton" Grid.Row="0" Grid.RowSpan="3" Grid.Column="2" Width="40" Height="40" Margin="5"                          >
             <SymbolIcon Symbol="Play"/>
         </Button>
-        <TextBlock x:ConnectionId='7' x:Name="ConvertInfoTextBlock" Grid.Row="2" Text="Pending" Style="{ThemeResource CaptionTextBlockStyle}" Margin="5"/>
+        <TextBlock x:ConnectionId='7' x:Name="ProcessingInfoTextBlock" Grid.Row="2" Text="Pending" Style="{ThemeResource CaptionTextBlockStyle}" Margin="5"/>
     </Grid>
 </UserControl>
 

@@ -21,3 +21,4 @@ C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2\obj\Debug\pri.resfiles.inter
 C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2\obj\Debug\qualifiers.txt
 C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2\obj\Debug\qualifiers.txt.intermediate
 C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2\obj\Debug\MultipleQualifiersPerDimensionFound.txt
+C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2\obj\Debug\Zadatak2.csprojAssemblyReference.cache

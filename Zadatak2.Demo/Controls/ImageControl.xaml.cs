@@ -20,30 +20,64 @@ namespace Zadatak2.Demo.Controls
 {
     public sealed partial class ImageControl : UserControl
     {
+
+        public delegate void ImageProcessingActionCompletedDelegate(ImageProcessing imageProcessing, object sender);
+
+        public event ImageProcessingActionCompletedDelegate ImageProcessingCancelled;
+        public event ImageProcessingActionCompletedDelegate ImageProcessingPaused;
+        public event ImageProcessingActionCompletedDelegate ImageProcessingResumed;
+        public event ImageProcessingActionCompletedDelegate ImageProcessingStarted;
+        public event ImageProcessingActionCompletedDelegate ImageProcessingCompleted;
+        public event ImageProcessingActionCompletedDelegate ImageProcessingRemoved;
+
+        private ImageProcessing ImageProcessing;
+
         public ImageControl()
         {
             this.InitializeComponent();
         }
 
-        public ImageControl(StorageFile storageFile)
+        public ImageControl(ImageProcessing imageProcessing)
         {
             this.InitializeComponent();
-            this.ImageTitle.Text = storageFile.Name;
+            this.ImageTitle.Text = imageProcessing.Filename;
+            this.ImageProcessing = imageProcessing;
+            imageProcessing.ProgressChanged += ImageProcessing_ProgressChanged;
+
+
         }
 
-        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        private async void ImageProcessing_ProgressChanged(double progress, ImageProcessing.ProcessingState processingState)
         {
+            await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            {
+                if (!double.IsNaN(progress))
+                    ProcessingProgressBar.Value = progress;
+                ProcessingInfoTextBlock.Text = processingState.ToString();
 
+                UpdateControlVisibility();
+            });
         }
 
-        private void PauseButton_Click(object sender, RoutedEventArgs e)
+        private void UpdateControlVisibility()
         {
+            ProcessingProgressBar.Visibility = CancelButton.Visibility = PauseButton.Visibility = (!(ImageProcessing.IsFinished || ImageProcessing.IsPending)).ToVisibility();
+            StartButton.Visibility = (ImageProcessing.IsPending || ImageProcessing.IsFinished).ToVisibility();
+            CancelButton.IsEnabled = ImageProcessing.CurrentState != ImageProcessing.ProcessingState.Cancelling && ImageProcessing.CurrentState != ImageProcessing.ProcessingState.Cancelled;
+            PauseButton.IsEnabled = ImageProcessing.CurrentState != ImageProcessing.ProcessingState.Pausing && ImageProcessing.CurrentState != ImageProcessing.ProcessingState.Paused;
 
         }
+
+        private void CancelButton_Click(object sender, RoutedEventArgs e) => ImageProcessingCancelled?.Invoke(ImageProcessing, this);
+
+        private void PauseButton_Click(object sender, RoutedEventArgs e) => ImageProcessingPaused?.Invoke(ImageProcessing, this);
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-
+            ImageProcessingStarted?.Invoke(ImageProcessing, this);
+            /*StartButton.Visibility = Visibility.Collapsed;
+            PauseButton.Visibility = Visibility.Visible;
+            CancelButton.Visibility = Visibility.Visible;*/
         }
     }
 }
