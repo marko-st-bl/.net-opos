@@ -26,11 +26,11 @@ namespace Zadatak2
         private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1);
         private readonly SemaphoreSlim pauseSemaphore = new SemaphoreSlim(1);
 
-        public ProcessingState CurrentState { get; private set; } = ProcessingState.Pending;
+        public ProcessingState CurrentState { get; set; } = ProcessingState.Pending;
         public bool IsFinished => CurrentState == ProcessingState.Done || CurrentState == ProcessingState.Error || CurrentState == ProcessingState.Cancelled;
-        public bool IsInitialized { get; private set; }
+        public bool IsInitialized { get; set; }
         public bool IsPending => CurrentState == ProcessingState.Pending;
-        public string Filename { get; private set; }
+        public string Filename { get; set; }
 
         private StorageFile outputFile;
         private StorageFile sourceFile;
@@ -49,6 +49,8 @@ namespace Zadatak2
             this.Filename = sourceFile.Name;
         }
 
+        public ImageProcessing() { }
+
         public void Initialize(StorageFile outputFile)
         {
             this.outputFile = outputFile;
@@ -56,7 +58,7 @@ namespace Zadatak2
             CurrentState = ProcessingState.Pending;
         }
 
-        public async Task GrayscaleAsync(CancellationToken cancellationToken)
+        public async Task ProcessImageAsync(CancellationToken cancellationToken, int maxDegreeOfParallelism)
         {
             CurrentState = ProcessingState.Processing;
             ProgressChanged?.Invoke(0, CurrentState);
@@ -71,70 +73,142 @@ namespace Zadatak2
                 // Get the SoftwareBitmap representation of the file
                 softwareBitmap = await decoder.GetSoftwareBitmapAsync();
 
-                Calculate(softwareBitmap);               
+                await CalculatePixelsAsync(softwareBitmap, cancellationToken, maxDegreeOfParallelism);               
             }
         }
 
-        private unsafe async void Calculate(SoftwareBitmap softwareBitmap)
+        private unsafe async Task CalculatePixelsAsync(SoftwareBitmap softwareBitmap, CancellationToken cancellationToken, int maxDegreeOfParallelism)
         {
-            using (BitmapBuffer buffer = softwareBitmap.LockBuffer(BitmapBufferAccessMode.Write))
+            try
             {
-                using (var reference = buffer.CreateReference())
-                {
-                    byte* dataInBytes;
-                    uint capacity;
-                    ((IMemoryBufferByteAccess)reference).GetBuffer(out dataInBytes, out capacity);
 
-                    // Fill-in the BGRA plane
-                    BitmapPlaneDescription bufferLayout = buffer.GetPlaneDescription(0);
-                    for (int i = 0; i < bufferLayout.Height; i++)
+                using (BitmapBuffer buffer = softwareBitmap.LockBuffer(BitmapBufferAccessMode.Write))
+                {
+                    using (var reference = buffer.CreateReference())
                     {
-                        for (int j = 0; j < bufferLayout.Width; j++)
+                        byte* dataInBytes;
+                        uint capacity;
+                        ((IMemoryBufferByteAccess)reference).GetBuffer(out dataInBytes, out capacity);
+
+                        // Fill-in the BGRA plane
+                        BitmapPlaneDescription bufferLayout = buffer.GetPlaneDescription(0);
+
+                        //GRAYSCALE
+                        for (int i = 0; i < bufferLayout.Height; i++)
                         {
-                            if(CurrentState == ProcessingState.Pausing)
+                            if(i % 100 == 0)
+                                ProgressChanged?.Invoke((double)i / bufferLayout.Height / 2.0, ProcessingState.Processing);
+
+                            if (cancellationToken.IsCancellationRequested)
+                            {
+                                cancellationToken.ThrowIfCancellationRequested();
+                            }
+                            if (CurrentState == ProcessingState.Pausing)
                             {
                                 CurrentState = ProcessingState.Paused;
-                                ProgressChanged?.Invoke((double)i/bufferLayout.Height, CurrentState);
+                                ProgressChanged?.Invoke((double)i / bufferLayout.Height / 2.0, CurrentState);
                                 //TRY TO CHANGE TO WAITASZNC()
                                 pauseSemaphore.Wait();
                                 pauseSemaphore.Release();
                                 CurrentState = ProcessingState.Processing;
                             }
-                            //byte value = (byte)((float)j / bufferLayout.Width * 255);
-                            byte value = (byte)((
-                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 0] + 
-                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 1] + 
-                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 2]) 
-                                / 3);
-                            dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 0] = value;
-                            dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 1] = value;
-                            dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 2] = value;
-                        }
-                        ProgressChanged?.Invoke(i / bufferLayout.Height, ProcessingState.Processing);
-                    }
+                            Parallel.For(0, bufferLayout.Width, new ParallelOptions { MaxDegreeOfParallelism = maxDegreeOfParallelism }, j =>
+                            {
+                                //byte value = (byte)((float)j / bufferLayout.Width * 255);
+                                byte value = (byte)((
+                                        dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 0] +
+                                        dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 1] +
+                                        dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 2])
+                                        / 3);
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 0] = value;
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 1] = value;
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 2] = value;
+                            });
 
-                    ProgressChanged?.Invoke(1.0, ProcessingState.Done);
+                        }
+
+                        //DITHERING
+
+                        for (int y = 0; y < bufferLayout.Height - 1; y++)
+                        {
+                            if(y%100 == 0)
+                                ProgressChanged?.Invoke(0.5 + ((double)y / bufferLayout.Height), ProcessingState.Processing);
+
+                            if (cancellationToken.IsCancellationRequested)
+                            {
+                                cancellationToken.ThrowIfCancellationRequested();
+                            }
+                            if (CurrentState == ProcessingState.Pausing)
+                            {
+                                CurrentState = ProcessingState.Paused;
+                                ProgressChanged?.Invoke(0.5 + ((double)y / bufferLayout.Height), CurrentState);
+                                //TRY TO CHANGE TO WAITASZNC()
+                                pauseSemaphore.Wait();
+                                pauseSemaphore.Release();
+                                CurrentState = ProcessingState.Processing;
+                            }
+                            for(int x = 1; x < bufferLayout.Width - 1; x++)
+                            {
+                                byte oldR = dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * x + 2];
+                                byte oldG = dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * x + 1];
+                                byte oldB = dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * x + 0];
+
+                                byte newR;
+                                byte newG;
+                                byte newB;
+
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * x + 0] = newB = (byte)(Math.Round((float)oldB / 255) * 255);
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * x + 1] = newG = (byte)(Math.Round((float)oldG / 255) * 255);
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * x + 2] = newR = (byte)(Math.Round((float)oldR / 255) * 255);
+
+                                int errR = oldR - newR;
+                                int errG = oldG - newG;
+                                int errB = oldB - newB;
+
+                                //X+1, Y * 7/16
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * (x + 1) + 0] += (byte)(errB * 7 / 16.0);
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * (x + 1) + 1] += (byte)(errG * 7 / 16.0);
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * (x + 1) + 2] += (byte)(errR * 7 / 16.0);
+
+                                //X-1, Y+1 * 3/16
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * (x - 1) + 0] += (byte)(errB * 3 / 16.0);
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * (x - 1) + 1] += (byte)(errG * 3 / 16.0);
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * (x - 1) + 2] += (byte)(errR * 3 / 16.0);
+
+                                //X, Y+1 * 5/16
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * x + 0] += (byte)(errB * 5 / 16.0);
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * x + 1] += (byte)(errG * 5 / 16.0);
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * x + 2] += (byte)(errR * 5 / 16.0);
+
+                                //X+1, Y+1 * 1/16
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * (x + 1) + 0] += (byte)(errB * 1 / 16.0);
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * (x + 1) + 1] += (byte)(errG * 1 / 16.0);
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * (x + 1) + 2] += (byte)(errR * 1 / 16.0);
+
+
+                            }
+                        }
+                        CurrentState = ProcessingState.Done;
+                        ProgressChanged?.Invoke(1.0, CurrentState);
+                    }
                 }
+
+                SaveSoftwareBitmapToFile(softwareBitmap);
             }
-            
-            SaveSoftwareBitmapToFile(softwareBitmap);
+            catch(OperationCanceledException)
+            {
+                CurrentState = ProcessingState.Cancelled;
+                ProgressChanged?.Invoke(0.0, CurrentState);
+            }
+            catch
+            {
+                CurrentState = ProcessingState.Error;
+                ProgressChanged?.Invoke(0.0, CurrentState);
+            }
         }
 
     private async void SaveSoftwareBitmapToFile(SoftwareBitmap softwareBitmap)
         {
-            /*FileSavePicker fileSavePicker = new FileSavePicker();
-            fileSavePicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
-            fileSavePicker.FileTypeChoices.Add("JPEG files", new List<string>() { ".jpg" });
-            fileSavePicker.SuggestedFileName = "image";
-
-            var outputFile = await fileSavePicker.PickSaveFileAsync();*/
-
-            if (outputFile == null)
-            {
-                // The user cancelled the picking operation
-                return;
-            }
-
             using (IRandomAccessStream stream = await outputFile.OpenAsync(FileAccessMode.ReadWrite))
             {
                 // Create an encoder with the desired format
@@ -142,12 +216,6 @@ namespace Zadatak2
 
                 // Set the software bitmap
                 encoder.SetSoftwareBitmap(softwareBitmap);
-
-                // Set additional encoding parameters, if needed
-                /*encoder.BitmapTransform.ScaledWidth = 320;
-                encoder.BitmapTransform.ScaledHeight = 240;
-                encoder.BitmapTransform.Rotation = Windows.Graphics.Imaging.BitmapRotation.Clockwise90Degrees;
-                encoder.BitmapTransform.InterpolationMode = BitmapInterpolationMode.Fant;*/
                 encoder.IsThumbnailGenerated = true;
 
                 try
@@ -178,6 +246,25 @@ namespace Zadatak2
             }
         }
 
+        private async Task WaitForTaskToComplete()
+        {
+            try
+            {
+                await processTask;
+            }
+            catch(OperationCanceledException)
+            {
+                CurrentState = ProcessingState.Cancelled;
+                ProgressChanged?.Invoke(0.0, CurrentState);
+            }
+            finally
+            {
+                cancellationTokenSource.Dispose();
+                cancellationTokenSource = null;
+                processTask = null;
+            }
+        }
+
         public async Task Start(bool silent = false)
         {
             await semaphore.WaitAsync();
@@ -186,7 +273,7 @@ namespace Zadatak2
                 if (CurrentState == ProcessingState.Pending || !IsInitialized)
                 {
                     cancellationTokenSource = new CancellationTokenSource();
-                    processTask = Task.Factory.StartNew(async () => await GrayscaleAsync(cancellationTokenSource.Token), cancellationTokenSource.Token);
+                    processTask = Task.Factory.StartNew(async () => await ProcessImageAsync(cancellationTokenSource.Token, ImageProcessingManager.MaxDegreeOfParallelism), cancellationTokenSource.Token);
                 }
                 else if (!silent)
                     throw new InvalidOperationException("The task is already started.");

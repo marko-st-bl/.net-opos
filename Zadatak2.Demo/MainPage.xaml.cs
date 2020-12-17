@@ -19,6 +19,7 @@ using Windows.UI.Xaml.Navigation;
 using Zadatak2.Demo.Controls;
 using Zadatak2;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Background;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -35,6 +36,11 @@ namespace Zadatak2.Demo
         {
             this.InitializeComponent();
             imageProcessingManager = (Application.Current as App).ImageProcessingManager;
+            foreach(var imageProcessing in imageProcessingManager.ImageProcessings)
+            {
+                AddItemToStackPanel(imageProcessing);
+            }
+            RegisterPendingTasksMonitor();
         }
 
         public ObservableCollection<ImageProcessing> Images { get; } = new ObservableCollection<ImageProcessing>();
@@ -53,7 +59,6 @@ namespace Zadatak2.Demo
                 foreach(StorageFile file in files)
                 {
                     ImageProcessing imageProcessing = new ImageProcessing(file);
-                    Images.Add(imageProcessing);
                     imageProcessingManager.AddImageProcessing(imageProcessing);
                     await AddItemToStackPanel(imageProcessing);
                 }
@@ -62,8 +67,17 @@ namespace Zadatak2.Demo
 
         private async void ConvertAllButton_Click(object sender, RoutedEventArgs e)
         {
-            ConvertAllButton.IsEnabled = false;
-
+            if(imageProcessingManager.ImageProcessings.Count < 1)
+            {
+                ContentDialog noImagesDialog = new ContentDialog
+                {
+                    Title = "No images",
+                    Content = "Add or Capture images and try again.",
+                    CloseButtonText = "OK"
+                };
+                await noImagesDialog.ShowAsync();
+                return;
+            }
             FolderPicker folderPicker = new FolderPicker() { SuggestedStartLocation = PickerLocationId.PicturesLibrary };
             folderPicker.FileTypeFilter.Add("*");
 
@@ -75,20 +89,6 @@ namespace Zadatak2.Demo
                 await imageProcessingManager.InitializeImageProcessings(folder);
                 await imageProcessingManager.RunImageProcessings();
             }
-            ConvertAllButton.IsEnabled = true;
-        }
-
-        private async Task InitializeStackPanel(IReadOnlyList<ImageProcessing> imageProcessings)
-        {
-            foreach(ImageProcessing ip in imageProcessings)
-            {
-                await this.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                {
-                    ImageControl imageControl = new ImageControl(ip);
-                    imageControl.ImageProcessingCancelled += null;
-                    imageControl.ImageProcessingStarted += ImageProcessingProgressControl_Started;
-                });
-            }
         }
 
         private async Task AddItemToStackPanel(ImageProcessing imageProcessing)
@@ -99,16 +99,33 @@ namespace Zadatak2.Demo
                 imageControl.ImageProcessingCancelled += ImageProcessingProgressControl_Cancelled;
                 imageControl.ImageProcessingStarted += ImageProcessingProgressControl_Started;
                 imageControl.ImageProcessingPaused += ImageProcessingProgressControl_Paused;
+                imageControl.ImageProcessingResumed += ImageProcessingProgressControl_Resumed;
+                imageControl.ImageProcessingRemoved += ImageProcessingProgressControl_Removed;
                 ImagesStackPanel.Children.Add(imageControl);
             });
         }
 
-        private async void ImageProcessingProgressControl_Paused(ImageProcessing imageProcessing, object sender) => imageProcessing.Pause();
+        private async Task RemoveImageProcessing(ImageProcessing imageProcessing, ImageControl imageControl)
+        {
+            if(imageProcessing.IsFinished)
+                await imageProcessing.Cancel(true);
+            imageProcessingManager.RemoveImageProcessing(imageProcessing);
+            if (imageControl != null)
+                ImagesStackPanel.Children.Remove(imageControl);
+        }
 
-        private async void ImageProcessingProgressControl_Cancelled(ImageProcessing imageProcessing, object sender) => imageProcessing.Cancel();
+        private async void ImageProcessingProgressControl_Paused(ImageProcessing imageProcessing, object sender) => await imageProcessing.Pause();
+
+        private async void ImageProcessingProgressControl_Cancelled(ImageProcessing imageProcessing, object sender) => await imageProcessing.Cancel();
+
+        private async void ImageProcessingProgressControl_Resumed(ImageProcessing imageProcessing, object sender) => await imageProcessing.Resume();
+
+        private async void ImageProcessingProgressControl_Removed(ImageProcessing imageProcessing, object sender) => await RemoveImageProcessing(imageProcessing, sender as ImageControl);
 
         private async void ImageProcessingProgressControl_Started(ImageProcessing imageProcessing, object sender)
         {
+            if (imageProcessing.IsFinished)
+                await imageProcessing.Reset();
             if (!imageProcessing.IsInitialized)
             {
                 FileSavePicker savePicker = new FileSavePicker()
@@ -124,6 +141,44 @@ namespace Zadatak2.Demo
             }
             if (imageProcessing.IsInitialized)
                 await imageProcessing.Start();
+        }
+
+        private async void TakePhotoButton_Click(object sender, RoutedEventArgs e)
+        {
+            CameraCaptureUI captureUI = new CameraCaptureUI();
+            captureUI.PhotoSettings.Format = CameraCaptureUIPhotoFormat.Jpeg;
+
+            StorageFile photo = await captureUI.CaptureFileAsync(CameraCaptureUIMode.Photo);
+
+            if (photo == null)
+            {
+                // User cancelled photo capture
+                return;
+            }
+
+            ImageProcessing imageProcessing = new ImageProcessing(photo);
+            imageProcessingManager.AddImageProcessing(imageProcessing);
+            await AddItemToStackPanel(imageProcessing);
+        }
+
+        public static void RegisterPendingTasksMonitor()
+        {
+            // Check for existing registrations of this background task.
+            foreach (var task in BackgroundTaskRegistration.AllTasks)
+            {
+                if (task.Value.Name.Equals("PendindgTaskMonitor"))
+                {
+                    // The task is already registered.
+                    return;
+                }
+            }
+
+            // Register the background task.
+            var builder = new BackgroundTaskBuilder { Name = "PendindgTaskMonitor", TaskEntryPoint = "Zadatak2.NotificationBackgroundTask" };
+            //if (condition != null) builder.AddCondition(condition);
+            builder.SetTrigger(new MaintenanceTrigger(freshnessTime: 15, oneShot: false));
+
+            builder.Register();
         }
     }
 }

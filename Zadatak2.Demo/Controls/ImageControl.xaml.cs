@@ -64,20 +64,20 @@ namespace Zadatak2.Demo.Controls
             ProcessingProgressBar.Visibility = CancelButton.Visibility = PauseButton.Visibility = (!(ImageProcessing.IsFinished || ImageProcessing.IsPending)).ToVisibility();
             StartButton.Visibility = (ImageProcessing.IsPending || ImageProcessing.IsFinished).ToVisibility();
             CancelButton.IsEnabled = ImageProcessing.CurrentState != ImageProcessing.ProcessingState.Cancelling && ImageProcessing.CurrentState != ImageProcessing.ProcessingState.Cancelled;
-            PauseButton.IsEnabled = ImageProcessing.CurrentState != ImageProcessing.ProcessingState.Pausing && ImageProcessing.CurrentState != ImageProcessing.ProcessingState.Paused;
-
+            PauseButton.Visibility = (ImageProcessing.CurrentState != ImageProcessing.ProcessingState.Pausing && ImageProcessing.CurrentState != ImageProcessing.ProcessingState.Paused && !ImageProcessing.IsFinished).ToVisibility();
+            ResumeButton.Visibility = (ImageProcessing.CurrentState == ImageProcessing.ProcessingState.Paused).ToVisibility();
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e) => ImageProcessingCancelled?.Invoke(ImageProcessing, this);
 
         private void PauseButton_Click(object sender, RoutedEventArgs e) => ImageProcessingPaused?.Invoke(ImageProcessing, this);
 
-        private void StartButton_Click(object sender, RoutedEventArgs e)
-        {
-            ImageProcessingStarted?.Invoke(ImageProcessing, this);
-            /*StartButton.Visibility = Visibility.Collapsed;
-            PauseButton.Visibility = Visibility.Visible;
-            CancelButton.Visibility = Visibility.Visible;*/
-        }
+        private void StartButton_Click(object sender, RoutedEventArgs e) => ImageProcessingStarted?.Invoke(ImageProcessing, this);
+
+        private void ResumeButton_Click(object sender, RoutedEventArgs e) => ImageProcessingResumed?.Invoke(ImageProcessing, this);
+
+        private void Grid_RightTapped(object sender, RightTappedRoutedEventArgs e) => FlyoutBase.ShowAttachedFlyout(sender as Grid);
+
+        private void MenuFlyoutItem_Click(object sender, RoutedEventArgs e) => ImageProcessingRemoved?.Invoke(ImageProcessing, this);
     }
 }

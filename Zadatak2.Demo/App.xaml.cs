@@ -43,7 +43,7 @@ namespace Zadatak2.Demo
         /// <param name="e">Details about the launch request and process.</param>
         protected async override void OnLaunched(LaunchActivatedEventArgs e)
         {
-            ImageProcessingManager = await ImageProcessingManager.Load();
+            ImageProcessingManager = new ImageProcessingManager();
 
             Frame rootFrame = Window.Current.Content as Frame;
 
@@ -96,12 +96,12 @@ namespace Zadatak2.Demo
         /// </summary>
         /// <param name="sender">The source of the suspend request.</param>
         /// <param name="e">Details about the suspend request.</param>
-        private void OnSuspending(object sender, SuspendingEventArgs e)
+        private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
-            var deferral = e.SuspendingOperation.GetDeferral();
+            /*var deferral = e.SuspendingOperation.GetDeferral();
             if (ImageProcessingManager != null)
-                ImageProcessingManager.Save();
-            deferral.Complete();
+                await ImageProcessingManager.Save();
+            deferral.Complete();*/
         }
     }
 }

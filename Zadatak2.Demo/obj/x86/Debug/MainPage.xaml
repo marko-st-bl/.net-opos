@@ -9,6 +9,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
+        
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
@@ -24,12 +25,22 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Top"
                     Padding="20">
-            <Button x:ConnectionId='4' x:Name="AddPhotosButton" Content="Add Photos" 
+            <Button x:ConnectionId='4' x:Name="AddPhotosButton" 
                     Width="150"
-                    Margin="10"                          />
-            <Button Content="Take Photo"
+                    Margin="10"                          >
+                <StackPanel Orientation="Horizontal">
+                    <SymbolIcon Symbol="Add" Margin="5, 0"/>
+                    <TextBlock Text="Add Photos" Margin="5, 0"/>
+                </StackPanel>
+            </Button>
+            <Button x:ConnectionId='5' x:Name="TakePhotoButton"
                     Width="150"
-                    Margin="10"/>
+                    Margin="10"                              >
+                <StackPanel Orientation="Horizontal">
+                    <SymbolIcon Symbol="Camera" Margin="5, 0"/>
+                    <TextBlock Text="Take Photo" Margin="5, 0"/>
+                </StackPanel>
+            </Button>
         </StackPanel>
 
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" VerticalScrollMode="Enabled">

@@ -22,3 +22,4 @@ C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2\obj\Debug\qualifiers.txt
 C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2\obj\Debug\qualifiers.txt.intermediate
 C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2\obj\Debug\MultipleQualifiersPerDimensionFound.txt
 C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2\obj\Debug\Zadatak2.csprojAssemblyReference.cache
+C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2\obj\Debug\Microsoft.Toolkit.Uwp.Notifications.pri.xml

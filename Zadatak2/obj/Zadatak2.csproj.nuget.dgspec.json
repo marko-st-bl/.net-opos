@@ -41,6 +41,10 @@
               "target": "Package",
               "version": "[6.2.10, )"
             },
+            "Microsoft.Toolkit.Uwp.Notifications": {
+              "target": "Package",
+              "version": "[7.0.0-preview4, )"
+            },
             "System.Drawing.Common": {
               "target": "Package",
               "version": "[5.0.0, )"

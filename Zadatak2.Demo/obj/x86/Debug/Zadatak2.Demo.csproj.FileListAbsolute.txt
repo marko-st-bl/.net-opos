@@ -54,3 +54,17 @@ C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Demo\bin\x86\Debug\Zadatak2.
 C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Demo\bin\x86\Debug\Zadatak2.pri
 C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Demo\obj\x86\Debug\Zadatak2.pri.xml
 C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Demo\obj\x86\Debug\FxResources.System.Drawing.Common.SR.resw
+C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Demo\obj\x86\Debug\Microsoft.UI.Xaml.pri.xml
+C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Demo\bin\x86\Debug\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Demo\bin\x86\Debug\Microsoft.Toolkit.dll
+C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Demo\bin\x86\Debug\Microsoft.Toolkit.pdb
+C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Demo\bin\x86\Debug\Microsoft.Toolkit.Uwp.dll
+C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Demo\bin\x86\Debug\Microsoft.Toolkit.Uwp.pdb
+C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Demo\bin\x86\Debug\Microsoft.Toolkit.Uwp.Notifications.dll
+C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Demo\bin\x86\Debug\Microsoft.Toolkit.Uwp.Notifications.pdb
+C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Demo\bin\x86\Debug\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Demo\bin\x86\Debug\System.Text.Encodings.Web.dll
+C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Demo\bin\x86\Debug\System.Text.Json.dll
+C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Demo\obj\x86\Debug\Microsoft.Toolkit.Uwp.pri.xml
+C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Demo\obj\x86\Debug\Microsoft.Toolkit.Uwp.Notifications.pri.xml
+C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Demo\obj\x86\Debug\FxResources.System.Text.Json.SR.resw
