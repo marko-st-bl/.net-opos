@@ -107,7 +107,7 @@ namespace Zadatak2
                             {
                                 CurrentState = ProcessingState.Paused;
                                 ProgressChanged?.Invoke((double)i / bufferLayout.Height / 2.0, CurrentState);
-                                //TRY TO CHANGE TO WAITASZNC()
+                                
                                 pauseSemaphore.Wait();
                                 pauseSemaphore.Release();
                                 CurrentState = ProcessingState.Processing;
@@ -119,7 +119,7 @@ namespace Zadatak2
                                         dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 0] +
                                         dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 1] +
                                         dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 2])
-                                        / 3);
+                                        / 3.0);
                                 dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 0] = value;
                                 dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 1] = value;
                                 dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 2] = value;

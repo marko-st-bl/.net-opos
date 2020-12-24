@@ -10,7 +10,6 @@ namespace Zadatak2
     public static class Utilities
     {
         public static Visibility ToVisibility(this bool isVisible) => isVisible ? Visibility.Visible : Visibility.Collapsed;
-
-        
+  
     }
 }

@@ -43,7 +43,7 @@
             </Button>
         </StackPanel>
 
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" VerticalScrollMode="Enabled">
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" VerticalScrollMode="Enabled" Padding="10">
             <StackPanel x:Name="ImagesStackPanel" Padding="10">
                 
             </StackPanel>

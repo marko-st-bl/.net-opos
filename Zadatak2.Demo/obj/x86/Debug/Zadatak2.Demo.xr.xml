@@ -79,6 +79,7 @@
     <RootType FullName="Windows.UI.Xaml.Controls.ScrollViewer">
       <RootProperty Name="VerticalScrollBarVisibility" />
       <RootProperty Name="VerticalScrollMode" />
+      <RootProperty Name="Padding" />
       <RootProperty Name="Content" />
     </RootType>
     <RootType FullName="Zadatak2.Demo.MainPage" />

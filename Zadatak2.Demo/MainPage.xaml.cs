@@ -163,22 +163,26 @@ namespace Zadatak2.Demo
 
         public static void RegisterPendingTasksMonitor()
         {
-            // Check for existing registrations of this background task.
+            var taskRegistered = false;
+            var exampleTaskName = "PendindgTaskMonitor";
+
             foreach (var task in BackgroundTaskRegistration.AllTasks)
             {
-                if (task.Value.Name.Equals("PendindgTaskMonitor"))
+                if (task.Value.Name == exampleTaskName)
                 {
-                    // The task is already registered.
-                    return;
+                    taskRegistered = true;
+                    break;
                 }
             }
 
-            // Register the background task.
-            var builder = new BackgroundTaskBuilder { Name = "PendindgTaskMonitor", TaskEntryPoint = "Zadatak2.NotificationBackgroundTask" };
-            //if (condition != null) builder.AddCondition(condition);
-            builder.SetTrigger(new MaintenanceTrigger(freshnessTime: 15, oneShot: false));
+            if (!taskRegistered)
+            {
+                var builder = new BackgroundTaskBuilder();
 
-            builder.Register();
+                builder.Name = exampleTaskName;
+                builder.TaskEntryPoint = "Zadatak2.NotificationBackgroundTask";
+                builder.SetTrigger(new SystemTrigger(SystemTriggerType.TimeZoneChange, false));
+            }
         }
     }
 }
