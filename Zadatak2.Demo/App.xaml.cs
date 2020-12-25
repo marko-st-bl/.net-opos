@@ -43,7 +43,7 @@ namespace Zadatak2.Demo
         /// <param name="e">Details about the launch request and process.</param>
         protected async override void OnLaunched(LaunchActivatedEventArgs e)
         {
-            ImageProcessingManager = new ImageProcessingManager();
+            ImageProcessingManager = await ImageProcessingManager.Load();
 
             Frame rootFrame = Window.Current.Content as Frame;
 
@@ -59,6 +59,7 @@ namespace Zadatak2.Demo
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
                     //TODO: Load state from previously suspended application
+                    
                 }
 
                 // Place the frame in the current Window
@@ -98,10 +99,10 @@ namespace Zadatak2.Demo
         /// <param name="e">Details about the suspend request.</param>
         private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
-            /*var deferral = e.SuspendingOperation.GetDeferral();
+            var deferral = e.SuspendingOperation.GetDeferral();
             if (ImageProcessingManager != null)
                 await ImageProcessingManager.Save();
-            deferral.Complete();*/
+            deferral.Complete();
         }
     }
 }

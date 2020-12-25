@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Graphics.Imaging;
@@ -73,11 +69,11 @@ namespace Zadatak2
                 // Get the SoftwareBitmap representation of the file
                 softwareBitmap = await decoder.GetSoftwareBitmapAsync();
 
-                await CalculatePixelsAsync(softwareBitmap, cancellationToken, maxDegreeOfParallelism);               
+                CalculatePixels(softwareBitmap, cancellationToken, maxDegreeOfParallelism);               
             }
         }
 
-        private unsafe async Task CalculatePixelsAsync(SoftwareBitmap softwareBitmap, CancellationToken cancellationToken, int maxDegreeOfParallelism)
+        private unsafe  void CalculatePixels(SoftwareBitmap softwareBitmap, CancellationToken cancellationToken, int maxDegreeOfParallelism)
         {
             try
             {
@@ -114,7 +110,6 @@ namespace Zadatak2
                             }
                             Parallel.For(0, bufferLayout.Width, new ParallelOptions { MaxDegreeOfParallelism = maxDegreeOfParallelism }, j =>
                             {
-                                //byte value = (byte)((float)j / bufferLayout.Width * 255);
                                 byte value = (byte)((
                                         dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 0] +
                                         dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * i + 4 * j + 1] +
@@ -127,7 +122,7 @@ namespace Zadatak2
 
                         }
 
-                        //DITHERING
+                        //FLOYD-STEINBERG DITHERING
 
                         for (int y = 0; y < bufferLayout.Height - 1; y++)
                         {
@@ -142,7 +137,7 @@ namespace Zadatak2
                             {
                                 CurrentState = ProcessingState.Paused;
                                 ProgressChanged?.Invoke(0.5 + ((double)y / bufferLayout.Height), CurrentState);
-                                //TRY TO CHANGE TO WAITASZNC()
+                                
                                 pauseSemaphore.Wait();
                                 pauseSemaphore.Release();
                                 CurrentState = ProcessingState.Processing;
@@ -153,37 +148,63 @@ namespace Zadatak2
                                 byte oldG = dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * x + 1];
                                 byte oldB = dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * x + 0];
 
-                                byte newR;
-                                byte newG;
-                                byte newB;
+                                // ROUND COLOR WITH FACTOR 1
+                                double newR = Math.Round((float)oldR / 255.0) * 255;
+                                double newG = Math.Round((float)oldG / 255.0) * 255;
+                                double newB = Math.Round((float)oldB / 255.0) * 255;
 
-                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * x + 0] = newB = (byte)(Math.Round((float)oldB / 255) * 255);
-                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * x + 1] = newG = (byte)(Math.Round((float)oldG / 255) * 255);
-                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * x + 2] = newR = (byte)(Math.Round((float)oldR / 255) * 255);
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * x + 0] = (byte)newB;
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * x + 1] = (byte)newG;
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * x + 2] = (byte)newR;
 
-                                int errR = oldR - newR;
-                                int errG = oldG - newG;
-                                int errB = oldB - newB;
+                                int errR = (int)(oldR - newR);
+                                int errG = (int)(oldG - newG);
+                                int errB = (int)(oldB - newB);
 
+                                //ADD PART OF ERROR TO SURROUNDING PIXELS
                                 //X+1, Y * 7/16
-                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * (x + 1) + 0] += (byte)(errB * 7 / 16.0);
-                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * (x + 1) + 1] += (byte)(errG * 7 / 16.0);
-                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * (x + 1) + 2] += (byte)(errR * 7 / 16.0);
+                                int orgB1 = dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * (x + 1) + 0];
+                                int orgG1 = dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * (x + 1) + 1];
+                                int orgR1 = dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * (x + 1) + 2];
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * (x + 1) + 0] = 
+                                    (byte)Math.Max(0, Math.Min(255, orgB1 + (errB * 7 / 16.0)));
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * (x + 1) + 1] = 
+                                    (byte)Math.Max(0, Math.Min(255, orgG1 + (errG * 7 / 16.0)));
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * (x + 1) + 2] = 
+                                    (byte)Math.Max(0, Math.Min(255, orgR1 + (errR * 7 / 16.0)));
 
                                 //X-1, Y+1 * 3/16
-                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * (x - 1) + 0] += (byte)(errB * 3 / 16.0);
-                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * (x - 1) + 1] += (byte)(errG * 3 / 16.0);
-                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * (x - 1) + 2] += (byte)(errR * 3 / 16.0);
+                                int orgB2 = dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * (x - 1) + 0];
+                                int orgG2 = dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * (x - 1) + 1];
+                                int orgR2 = dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * (x - 1) + 2];
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * (x - 1) + 0] = 
+                                    (byte)Math.Max(0, Math.Min(255, orgB2 + (errB * 3 / 16.0)));
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * (x - 1) + 1] = 
+                                    (byte)Math.Max(0, Math.Min(255, orgG2 + (errG * 3 / 16.0)));
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * (x - 1) + 2] = 
+                                    (byte)Math.Max(0, Math.Min(255, orgR2 + (errR * 3 / 16.0)));
 
                                 //X, Y+1 * 5/16
-                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * x + 0] += (byte)(errB * 5 / 16.0);
-                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * x + 1] += (byte)(errG * 5 / 16.0);
-                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * x + 2] += (byte)(errR * 5 / 16.0);
+                                int orgB3 = dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * x + 0];
+                                int orgG3 = dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * x + 1];
+                                int orgR3 = dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * x + 2];
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * x + 0] = 
+                                    (byte)Math.Max(0, Math.Min(255, orgB3 + (errB * 5 / 16.0)));
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * x + 1] = 
+                                    (byte)Math.Max(0, Math.Min(255, orgG3 + (errG * 5 / 16.0)));
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * x + 2] = 
+                                    (byte)Math.Max(0, Math.Min(255, orgR3 + (errR * 5 / 16.0)));
 
                                 //X+1, Y+1 * 1/16
-                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * (x + 1) + 0] += (byte)(errB * 1 / 16.0);
-                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * (x + 1) + 1] += (byte)(errG * 1 / 16.0);
-                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * (x + 1) + 2] += (byte)(errR * 1 / 16.0);
+                                int orgB4 = dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * (x + 1) + 0];
+                                int orgG4 = dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * (x + 1) + 1];
+                                int orgR4 = dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * (x + 1) + 2];
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * (x + 1) + 0] = 
+                                    (byte)Math.Max(0, Math.Min(255, (orgB4 + (errB * 1 / 16.0))));
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * (x + 1) + 1] = 
+                                    (byte)Math.Max(0, Math.Min(255, (orgG4 + (errG * 1 / 16.0))));
+                                dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * (x + 1) + 2] = 
+                                    (byte)Math.Max(0, Math.Min(255, orgR4 + (errR * 1 / 16.0)));
 
 
                             }
@@ -357,6 +378,13 @@ namespace Zadatak2
             {
                 semaphore.Release();
             }
+        }
+
+        public (string sourcePath, string outputPath) GetParameters()
+        {
+            if(outputFile != null)
+                return (sourceFile.Path, outputFile.Path);
+            return (sourceFile.Path, "");
         }
     }
 }

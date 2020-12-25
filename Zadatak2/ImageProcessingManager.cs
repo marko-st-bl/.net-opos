@@ -32,6 +32,7 @@ namespace Zadatak2
             foreach(var imageProcessing in unitializedProcessings)
             {
                 StorageFile outputFile = await folder.CreateFileAsync(imageProcessing.Filename, CreationCollisionOption.GenerateUniqueName);
+                Windows.Storage.AccessCache.StorageApplicationPermissions.FutureAccessList.Add(outputFile);
                 imageProcessing.Initialize(outputFile);
             }
         }
@@ -49,22 +50,35 @@ namespace Zadatak2
             }
         }
 
-        public static async Task<List<ImageProcessing>> Load()
+        public static async Task<ImageProcessingManager> Load()
         {
-            List<ImageProcessing> imageProcessings = new List<ImageProcessing>();
-            StorageFile file = await GetSerializationFile();
-
             try
             {
-                XmlSerializer xml = new XmlSerializer(typeof(List<ImageProcessing>));
+                StorageFile file = await GetSerializationFile();
+
+                XElement xml;
                 using (Stream stream = await file.OpenStreamForReadAsync())
-                    imageProcessings = (List<ImageProcessing>)xml.Deserialize(stream);
+                    xml = XElement.Load(stream);
+
+                List<(string sourcePath, string outputPath)> attributes = xml.Elements().Select(x => (x.Attribute("sourcePath").Value, x.Attribute("outputPath").Value)).ToList();
+                List<ImageProcessing> processings = new List<ImageProcessing>();
+                foreach(var att in attributes)
+                {
+                    StorageFile sourceFile = await StorageFile.GetFileFromPathAsync(att.sourcePath);
+                    if (att.outputPath != "")
+                    {
+                        StorageFile outputFile = await StorageFile.GetFileFromPathAsync(att.outputPath);
+                        processings.Add(new ImageProcessing(sourceFile, outputFile));
+                    }
+                    else
+                        processings.Add(new ImageProcessing(sourceFile));
+                }
+                return new ImageProcessingManager(processings);
             }
             catch
             {
-
+                return new ImageProcessingManager();
             }
-            return imageProcessings;
         }
 
         public void AddImageProcessing(ImageProcessing imageProcessing)
@@ -74,14 +88,13 @@ namespace Zadatak2
 
         public async Task Save()
         {
-            XmlSerializer xml = new XmlSerializer(typeof(List<ImageProcessing>));
+            XElement xml = new XElement(nameof(ImageProcessingManager), imageProcessings.Select(x => x.GetParameters()).Select(
+                x => new XElement(nameof(ImageProcessing), new XAttribute("sourcePath", x.sourcePath), new XAttribute("outputPath", x.outputPath))));
 
             StorageFile file = await GetSerializationFile();
 
-            using(Stream stream = await file.OpenStreamForWriteAsync())
-            {
-                xml.Serialize(stream, imageProcessings);
-            }
+            using (Stream stream = await file.OpenStreamForWriteAsync())
+                xml.Save(stream);
         }
 
         public void RemoveImageProcessing(ImageProcessing imageProcessing) => imageProcessings.Remove(imageProcessing);

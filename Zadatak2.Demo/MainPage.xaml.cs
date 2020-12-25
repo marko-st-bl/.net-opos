@@ -43,8 +43,6 @@ namespace Zadatak2.Demo
             RegisterPendingTasksMonitor();
         }
 
-        public ObservableCollection<ImageProcessing> Images { get; } = new ObservableCollection<ImageProcessing>();
-
         private async void AddPhotos_Clicked(object sender, RoutedEventArgs e)
         {
             var picker = new Windows.Storage.Pickers.FileOpenPicker();
@@ -58,6 +56,7 @@ namespace Zadatak2.Demo
             {
                 foreach(StorageFile file in files)
                 {
+                    Windows.Storage.AccessCache.StorageApplicationPermissions.FutureAccessList.Add(file);
                     ImageProcessing imageProcessing = new ImageProcessing(file);
                     imageProcessingManager.AddImageProcessing(imageProcessing);
                     await AddItemToStackPanel(imageProcessing);
@@ -149,6 +148,7 @@ namespace Zadatak2.Demo
             captureUI.PhotoSettings.Format = CameraCaptureUIPhotoFormat.Jpeg;
 
             StorageFile photo = await captureUI.CaptureFileAsync(CameraCaptureUIMode.Photo);
+            Windows.Storage.AccessCache.StorageApplicationPermissions.FutureAccessList.Add(photo);
 
             if (photo == null)
             {
