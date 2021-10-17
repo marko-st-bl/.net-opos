@@ -1,6 +1,6 @@
 # UWP
 
-Aplikacija implementira [Floyd-Steinberg dithering](https://en.wikipedia.org/wiki/Floyd%E2%80%93Steinberg_dithering) algoritam. Ima jednostavan interfejs prikazan na slici ispod.
+Aplikacija implementira [Floyd-Steinberg dithering](https://en.wikipedia.org/wiki/Floyd%E2%80%93Steinberg_dithering) algoritam. Ima jednostavan interfejs prikazan na slici ispod. Aplikacija moze paralelno da obradjuje vise slika, bice prikazan *progress bar* i kontrole za pauziranje/prekid obrade.
 
 ![main](./Assets/uwp-1.PNG)
 
