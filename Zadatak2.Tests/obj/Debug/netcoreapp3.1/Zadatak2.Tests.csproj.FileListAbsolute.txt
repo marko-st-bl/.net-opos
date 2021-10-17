@@ -85,7 +85,6 @@ C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Tests\bin\Debug\netcoreapp3.
 C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Tests\bin\Debug\netcoreapp3.1\zh-Hant\Microsoft.TestPlatform.CommunicationUtilities.resources.dll
 C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Tests\bin\Debug\netcoreapp3.1\zh-Hant\Microsoft.TestPlatform.CrossPlatEngine.resources.dll
 C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Tests\bin\Debug\netcoreapp3.1\zh-Hant\Microsoft.VisualStudio.TestPlatform.Common.resources.dll
-C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Tests\obj\Debug\netcoreapp3.1\Zadatak2.Tests.csprojAssemblyReference.cache
 C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Tests\obj\Debug\netcoreapp3.1\Zadatak2.Tests.AssemblyInfoInputs.cache
 C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Tests\obj\Debug\netcoreapp3.1\Zadatak2.Tests.AssemblyInfo.cs
 C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Tests\obj\Debug\netcoreapp3.1\Zadatak2.Tests.csproj.CoreCompileInputs.cache
@@ -93,3 +92,4 @@ C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Tests\obj\Debug\netcoreapp3.
 C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Tests\obj\Debug\netcoreapp3.1\Zadatak2.Tests.dll
 C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Tests\obj\Debug\netcoreapp3.1\Zadatak2.Tests.pdb
 C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Tests\obj\Debug\netcoreapp3.1\Zadatak2.Tests.genruntimeconfig.cache
+C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Tests\obj\Debug\netcoreapp3.1\Zadatak2.Tests.csprojAssemblyReference.cache

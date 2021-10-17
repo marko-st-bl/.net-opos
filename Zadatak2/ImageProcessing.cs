@@ -142,8 +142,9 @@ namespace Zadatak2
                                 pauseSemaphore.Release();
                                 CurrentState = ProcessingState.Processing;
                             }
-                            for(int x = 1; x < bufferLayout.Width - 1; x++)
+                            for (int x = 1; x < bufferLayout.Width - 1; x++)
                             {
+
                                 byte oldR = dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * x + 2];
                                 byte oldG = dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * x + 1];
                                 byte oldB = dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * y + 4 * x + 0];
@@ -205,8 +206,6 @@ namespace Zadatak2
                                     (byte)Math.Max(0, Math.Min(255, (orgG4 + (errG * 1 / 16.0))));
                                 dataInBytes[bufferLayout.StartIndex + bufferLayout.Stride * (y + 1) + 4 * (x + 1) + 2] = 
                                     (byte)Math.Max(0, Math.Min(255, orgR4 + (errR * 1 / 16.0)));
-
-
                             }
                         }
                         CurrentState = ProcessingState.Done;

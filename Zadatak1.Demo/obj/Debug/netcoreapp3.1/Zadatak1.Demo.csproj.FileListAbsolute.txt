@@ -6,7 +6,6 @@ C:\Users\Marko\source\repos\OposZadaci2020\Zadatak1.Demo\bin\Debug\netcoreapp3.1
 C:\Users\Marko\source\repos\OposZadaci2020\Zadatak1.Demo\bin\Debug\netcoreapp3.1\Zadatak1.Demo.pdb
 C:\Users\Marko\source\repos\OposZadaci2020\Zadatak1.Demo\bin\Debug\netcoreapp3.1\Zadatak1.dll
 C:\Users\Marko\source\repos\OposZadaci2020\Zadatak1.Demo\bin\Debug\netcoreapp3.1\Zadatak1.pdb
-C:\Users\Marko\source\repos\OposZadaci2020\Zadatak1.Demo\obj\Debug\netcoreapp3.1\Zadatak1.Demo.csprojAssemblyReference.cache
 C:\Users\Marko\source\repos\OposZadaci2020\Zadatak1.Demo\obj\Debug\netcoreapp3.1\Zadatak1.Demo.AssemblyInfoInputs.cache
 C:\Users\Marko\source\repos\OposZadaci2020\Zadatak1.Demo\obj\Debug\netcoreapp3.1\Zadatak1.Demo.AssemblyInfo.cs
 C:\Users\Marko\source\repos\OposZadaci2020\Zadatak1.Demo\obj\Debug\netcoreapp3.1\Zadatak1.Demo.csproj.CoreCompileInputs.cache
@@ -14,3 +13,4 @@ C:\Users\Marko\source\repos\OposZadaci2020\Zadatak1.Demo\obj\Debug\netcoreapp3.1
 C:\Users\Marko\source\repos\OposZadaci2020\Zadatak1.Demo\obj\Debug\netcoreapp3.1\Zadatak1.Demo.dll
 C:\Users\Marko\source\repos\OposZadaci2020\Zadatak1.Demo\obj\Debug\netcoreapp3.1\Zadatak1.Demo.pdb
 C:\Users\Marko\source\repos\OposZadaci2020\Zadatak1.Demo\obj\Debug\netcoreapp3.1\Zadatak1.Demo.genruntimeconfig.cache
+C:\Users\Marko\source\repos\OposZadaci2020\Zadatak1.Demo\obj\Debug\netcoreapp3.1\Zadatak1.Demo.csprojAssemblyReference.cache

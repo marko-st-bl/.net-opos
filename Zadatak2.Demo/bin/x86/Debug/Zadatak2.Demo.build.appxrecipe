@@ -55,7 +55,7 @@
     <AppxPackagedFile Include="C:\Users\Marko\.nuget\packages\system.text.json\4.7.2\lib\netstandard2.0\System.Text.Json.dll">
       <PackagePath>System.Text.Json.dll</PackagePath>
     </AppxPackagedFile>
-    <AppxPackagedFile Include="C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2\bin\Debug\Zadatak2.dll">
+    <AppxPackagedFile Include="C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2\bin\x86\Debug\Zadatak2.dll">
       <PackagePath>Zadatak2.dll</PackagePath>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Program Files %28x86%29\Windows Kits\10\bin\10.0.18362.0\XamlCompiler\Microsoft.UI.Xaml.Markup.winmd">

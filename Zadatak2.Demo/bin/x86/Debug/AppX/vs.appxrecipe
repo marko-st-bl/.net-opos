@@ -30,13 +30,13 @@
     <AppXManifest Include="C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Demo\bin\x86\Debug\Core\AppxManifest.xml">
       <PackagePath>AppxManifest.xml</PackagePath>
       <ReRegisterAppIfChanged>true</ReRegisterAppIfChanged>
-      <Modified>2020-12-25T10:53:18.192</Modified>
+      <Modified>2020-12-29T00:27:48.824</Modified>
     </AppXManifest>
   </ItemGroup>
   <ItemGroup>
     <AppxPackagedFile Include="C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Demo\bin\x86\Debug\Zadatak2.Demo.exe">
       <PackagePath>entrypoint\Zadatak2.Demo.exe</PackagePath>
-      <Modified>2020-12-25T10:53:16.136</Modified>
+      <Modified>2020-12-29T00:27:47.494</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Marko\.nuget\packages\microsoft.bcl.asyncinterfaces\1.1.0\lib\netstandard2.0\Microsoft.Bcl.AsyncInterfaces.dll">
       <PackagePath>Microsoft.Bcl.AsyncInterfaces.dll</PackagePath>
@@ -76,7 +76,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2\bin\Debug\Zadatak2.dll">
       <PackagePath>Zadatak2.dll</PackagePath>
-      <Modified>2020-12-25T10:53:07.370</Modified>
+      <Modified>2020-12-29T00:27:41.014</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Program Files %28x86%29\Windows Kits\10\bin\10.0.18362.0\XamlCompiler\Microsoft.UI.Xaml.Markup.winmd">
       <PackagePath>Microsoft.UI.Xaml.Markup.winmd</PackagePath>
@@ -346,15 +346,15 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Demo\bin\x86\Debug\App.xbf">
       <PackagePath>App.xbf</PackagePath>
-      <Modified>2020-12-25T10:53:15.964</Modified>
+      <Modified>2020-12-29T00:27:47.391</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Demo\bin\x86\Debug\Controls\ImageControl.xbf">
       <PackagePath>Controls\ImageControl.xbf</PackagePath>
-      <Modified>2020-12-25T10:53:15.964</Modified>
+      <Modified>2020-12-29T00:27:47.391</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Demo\bin\x86\Debug\MainPage.xbf">
       <PackagePath>MainPage.xbf</PackagePath>
-      <Modified>2020-12-25T10:53:15.964</Modified>
+      <Modified>2020-12-29T00:27:47.392</Modified>
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Program Files %28x86%29\Microsoft SDKs\Windows Kits\10\ExtensionSDKs\Microsoft.UniversalCRT.Debug\10.0.18362.0\\redist\Debug\x86\ucrtbased.dll">
       <PackagePath>ucrtbased.dll</PackagePath>
@@ -374,7 +374,7 @@
     </AppxPackagedFile>
     <AppxPackagedFile Include="C:\Users\Marko\source\repos\OposZadaci2020\Zadatak2.Demo\bin\x86\Debug\Core\Zadatak2.Demo.exe">
       <PackagePath>Zadatak2.Demo.exe</PackagePath>
-      <Modified>2020-12-25T10:53:18.184</Modified>
+      <Modified>2020-12-29T00:27:48.818</Modified>
     </AppxPackagedFile>
   </ItemGroup>
   <ItemGroup>
